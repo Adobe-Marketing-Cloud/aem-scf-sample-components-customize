@@ -1,0 +1,32 @@
+.scf-project-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	border-top: 1px solid #EFEFEF;
+}
+.scf-project-item {
+	margin-bottom: 10px;
+	border-bottom: 1px solid #EFEFEF;
+	line-height: 60px;
+}
+.scf-project-item-title {
+	float: left;
+	width: 70%;
+	line-height: 60px;
+	display: inline-block;
+}
+.scf-project-item-owner {
+	float: left;
+	line-height: 60px;
+	display: inline-block;
+}
+.scf-project-item-owner-img {
+	float: right;
+	margin-top: 10px;
+}
+.scf-taskbox-info {
+	float: left;
+}
+.scf-new-project {
+	float: right;
+}

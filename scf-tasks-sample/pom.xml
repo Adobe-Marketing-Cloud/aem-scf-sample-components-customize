@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Copyright 2015 Adobe Systems Incorporated
+  All Rights Reserved.
+
+  NOTICE:  Adobe permits you to use, modify, and distribute this file in accordance with the
+  terms of the Adobe license agreement accompanying it.  If you have received this file from a
+  source other than Adobe, then your use, modification, or distribution of it requires the prior
+  written permission of Adobe.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+	<!-- PROJECT DESCRIPTION ================================================== -->
+    <groupId>com.adobe.cq.social.sample</groupId>
+    <artifactId>scf-tasks-sample-reactor</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>SCF Tasks Sample Reactor</name>
+    <description>SCF Tasks Sample Reactor</description>
+
+    <modules>
+        <module>bundles/scf-tasks-sample</module>
+        <module>content</module>
+    </modules>
+</project>
+

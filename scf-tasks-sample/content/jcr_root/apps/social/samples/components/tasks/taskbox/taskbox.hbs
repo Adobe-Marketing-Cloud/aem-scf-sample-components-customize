@@ -1,0 +1,34 @@
+<div class="scf scf-taskbox" data-component-id="{{id}}" data-scf-component="social/samples/components/tasks/taskbox">
+	<header class="scf-taskbox-info">
+	    <h3>{{properties.name}}</h3>
+    	<h4>Projects: {{totalSize}}</h4>
+    </header>
+    <button class="scf-new-project" evt="click=toggleComposer">{{i18n "New Project"}}</button>
+    <br style="clear: both;" />
+        <div class="scf-composer-block scf-js-composer-block scf-is-hidden">
+            <img class="scf-composer-avatar" src="{{loggedInUser.avatarUrl}}"></img>
+            <form evt="submit=addProject" class="scf-composer">
+                <input class="scf-composer-msg" type="text" data-attrib="title" name="title" placeholder="{{i18n "Title"}}" />
+                <textarea class="scf-composer-msg" type="text" data-attrib="description" name="description" placeholder="{{i18n "Description"}}"
+                    class="comment-composer-input"></textarea>
+                <div class='scf-composer-toolbar'>
+                    <div class="scf-composer-actions">
+                        <button type="reset" class="scf-composer-action">{{i18n "Cancel"}}</button>
+                        <input type="submit" value="{{i18n "Create"}}"/>
+                    </div>
+                </div>
+            </form>
+	    </div>
+	<div class="scf-project-filters">
+		{{#unless filtered}}<button evt="click=showMyProjects">{{i18n "My Projects"}}</button>{{/unless}}
+	    {{#if filtered}}<button evt="click=showAllProjects">{{i18n "Show all Projects"}}</button>{{/if}}     
+    </div>
+    <br style="clear: both;" />
+    <ul class="scf-project-list">
+        {{#each items}}
+            <li class="scf-project-item">
+                {{include this resourceType="social/samples/components/tasks/project"}}
+            </li>
+        {{/each}}
+    </ul>
+</div>

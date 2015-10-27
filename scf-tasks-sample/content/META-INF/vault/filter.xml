@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/apps/social/samples"/>
+    <filter root="/etc/clientlibs/social/samples/taskbox"/>
+    <filter root="/libs/social/scf-tasks-sample/install/"/>
+
+</workspaceFilter>

@@ -1,0 +1,12 @@
+.scf-icon-project-delete:before {
+	content: "";
+}
+.scf-project-tools {
+    display: inline-block;
+    margin: 0px 10px;
+    padding: 2px 10px;
+    border: 1px solid #4D4D4D;
+    line-height: 20px;
+    border-radius: 10px;
+    background-color: #eee;
+}                
