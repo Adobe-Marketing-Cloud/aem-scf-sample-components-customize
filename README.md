@@ -5,7 +5,7 @@ Sample package for AEM Social Communities - Social Component Framework (SCF).  E
 
 scf-tasks-sample
 ================
-This demonstrates building an SCF component from the ground up. It builds the component on top of SRP directly. While we strongly recommend that people build on top of com.adobe.cq.social.commons.comments.api classes (because of the extensive functionality they provide as a starting point), we recognize that sometimes the model is just too different. This sample requires at least AEM 6.1 with Social Communities FP1.
+This demonstrates building an SCF component from the ground up. It builds the component on top of SRP directly. While we strongly recommend that people build on top of com.adobe.cq.social.commons.comments.api classes (because of the extensive functionality they provide as a starting point), we recognize that sometimes the model is just too different. This sample requires at least AEM 6.1 with Social Communities 1.8.x.
 
 To use this sample, build and install the bundle and content package. You can then install the content package in the resources directory. This will give you a miniature site at /content/acme/en.html. There is a projects page in that site that demonstrates the sample functionality.
 
