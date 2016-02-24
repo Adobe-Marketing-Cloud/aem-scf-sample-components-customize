@@ -18,6 +18,7 @@ import com.adobe.cq.social.samples.scf.tasks.api.ProjectSocialComponent;
 import com.adobe.cq.social.scf.ClientUtilities;
 import com.adobe.cq.social.scf.User;
 import com.adobe.cq.social.scf.core.BaseSocialComponent;
+import com.adobe.cq.social.ugcbase.CollabUser;
 
 public class ProjectSocialComponentImpl extends BaseSocialComponent implements ProjectSocialComponent {
     
@@ -40,7 +41,7 @@ public class ProjectSocialComponentImpl extends BaseSocialComponent implements P
 
     @Override
     public User getOwner() {
-        final String ownerId = props.get("owner","");
+        final String ownerId = props.get(CollabUser.PROP_NAME,"");
         return this.clientUtils.getUser(ownerId, this.resource.getResourceResolver());
     }
 
@@ -48,7 +49,7 @@ public class ProjectSocialComponentImpl extends BaseSocialComponent implements P
     @Override
     protected List<String> getIgnoredProperties() {
         this.ignoredProperties.add("jcr:.*");
-        this.ignoredProperties.add("owner");
+        this.ignoredProperties.add(CollabUser.PROP_NAME);
         return this.ignoredProperties;
     }
 
