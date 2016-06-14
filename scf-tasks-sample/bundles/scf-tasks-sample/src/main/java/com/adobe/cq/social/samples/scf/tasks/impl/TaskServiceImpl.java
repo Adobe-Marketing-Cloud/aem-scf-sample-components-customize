@@ -102,7 +102,7 @@ public class TaskServiceImpl implements TasksService {
             props.put(SocialUtils.PN_PARENTID, taskBox.getPath());
             props.put("sling:resourceType", ProjectSocialComponent.PROJECT_RESOURCE_TYPE);
             props.put("jcr:primaryType", "nt:unstructured");
-
+            props.put("wyatt_extension", "boo");
             // use the Resource API to create resource to make this data store agnostic
             final Resource newProject =
                 srp.create(resolver, socialUtils.resourceToUGCStoragePath(taskBox) + "/"
