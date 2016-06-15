@@ -78,7 +78,7 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
         	String paramString = params.getString();
         	
             // Step 1: set up the filter
-            final UgcFilter filter = getFilter(paramString);
+            final UgcFilter filter = getFilter(request);
 
      
             // Step 2: get a UgcSearch impl.
@@ -90,7 +90,6 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
             // In 6.1, always send null for the first parameter. If possible, send false for the final parameter.
 	        int count = 0;
 	        projects = new ArrayList<Object>(10);
-
             try {
 				final SearchResults<Resource> results = search.find(null, resolver, filter, 0, 10, false);
 				// Do something with the results.
@@ -170,33 +169,39 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
     }
     
     /**
-     * Set up an "interesting" filter.
+     * Build the filter from the parameter string.
      * @return the filter
      */
-    static UgcFilter getFilter(String paramString) {
+    static UgcFilter getFilter(SlingHttpServletRequest request) {
 
         
         final UgcFilter filter = new UgcFilter();
-        // Parse the filter strings from the parameter string
-        String[] split = new String[10];
-        int count = 0;
-        for (final String filterString : paramString.split(",")){
-        	split[count] = filterString;
-        	count++;
+        
+        
+        // Parse the search text from the parameter string
+        if (request.getRequestParameter("filter")!=null){
+	        String[] split = new String[10];
+	        RequestParameter textSpecParams = request.getRequestParameter("filter");
+	        String textSpecs = textSpecParams.getString();
+	        int count = 0;
+	        for (final String filterString : textSpecs.split(",")){
+	        	split[count] = filterString;
+	        	count++;
+	        }
+	  
+	        // Add the constraints to a ConstraintGroup
+	        ConstraintGroup cg = new ConstraintGroup();
+	        count = 0;
+	        while (split[count] != null) {
+	        	String searchText = split[count].split(":")[1];
+	        	String option = "jcr:" + split[count].split(":")[0];
+	        	if (searchText != null && option != null){
+	        	    cg.or(new FullTextConstraint(searchText, option));
+	        	    count++;
+	        	}
+	        }
+	        filter.and(cg);
         }
-  
-        // Add the constraints to a ConstraintGroup
-        ConstraintGroup cg = new ConstraintGroup();
-        count = 0;
-        while (split[count] != null) {
-        	String searchText = split[count].split(":")[1];
-        	String option = "jcr:" + split[count].split(":")[0];
-        	if (searchText != null && option != null){
-        	    cg.and(new FullTextConstraint(searchText, option));
-        	    count++;
-        	}
-        }
-        filter.and(cg);
 
         // Also restrict the paths we search under.
         final ConstraintGroup pathFilters = new ConstraintGroup(Operator.And);
@@ -205,7 +210,28 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
         filter.and(pathFilters);
 
         // Also sort.
-        filter.addSort(new UgcSort("jcr:title", Direction.Asc));
+        if(request.getRequestParameter("sort")!=null){
+	        RequestParameter sortSpecParams = request.getRequestParameter("sort");
+        	String[] sortSpecs = new String[10];
+        	String sortSpecText = sortSpecParams.getString();
+        	int count = 0;
+        	for (final String param:sortSpecText.split(",")){
+        		sortSpecs[count] = param;
+        		count++;
+        	}
+        	count = 0;
+        	while(sortSpecs[count]!=null && count < 10){
+        		String propToSort = "jcr:"+sortSpecs[count].split(":")[0];
+        		String direction = sortSpecs[count].split(":")[1];
+        		if (direction.equals("asc")){
+                    filter.addSort(new UgcSort(propToSort, Direction.Asc));
+        		}
+        		if (direction.equals("desc")){
+                    filter.addSort(new UgcSort(propToSort, Direction.Desc));
+        		}
+        		count++;
+        	}
+        }
         return filter;
     }
 
