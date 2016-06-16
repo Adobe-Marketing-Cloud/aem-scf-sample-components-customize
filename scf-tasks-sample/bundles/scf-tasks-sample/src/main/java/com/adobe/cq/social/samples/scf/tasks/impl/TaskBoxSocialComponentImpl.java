@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.jcr.RepositoryException;
 
@@ -174,9 +175,7 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
      */
     static UgcFilter getFilter(SlingHttpServletRequest request) {
 
-        
         final UgcFilter filter = new UgcFilter();
-        
         
         // Parse the search text from the parameter string
         if (request.getRequestParameter("filter")!=null){
@@ -184,7 +183,14 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
 	        RequestParameter textSpecParams = request.getRequestParameter("filter");
 	        String textSpecs = textSpecParams.getString();
 	        int count = 0;
-	        for (final String filterString : textSpecs.split(",")){
+	        String splitSymbol = ",";
+	        if (textSpecs.contains(".")){
+	        	splitSymbol = ".";
+	        }
+	        else if (textSpecs.contains("|")){
+	        	splitSymbol = "|";
+	        }
+	        for (final String filterString : textSpecs.split(Pattern.quote(splitSymbol))){
 	        	split[count] = filterString;
 	        	count++;
 	        }
@@ -196,7 +202,16 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
 	        	String searchText = split[count].split(":")[1];
 	        	String option = "jcr:" + split[count].split(":")[0];
 	        	if (searchText != null && option != null){
-	        	    cg.or(new FullTextConstraint(searchText, option));
+	        		if (splitSymbol=="|"){
+	        			cg.or(new FullTextConstraint(searchText, option));
+	        		}
+	        		else if (splitSymbol=="."){
+	        			cg.and(new FullTextConstraint(searchText, option));
+	        		}
+	        		else{
+	        			cg.and(new FullTextConstraint(searchText, option));
+
+	        		}
 	        	    count++;
 	        	}
 	        }
