@@ -183,14 +183,7 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
 	        RequestParameter textSpecParams = request.getRequestParameter("filter");
 	        String textSpecs = textSpecParams.getString();
 	        int count = 0;
-	        String splitSymbol = ",";
-	        if (textSpecs.contains(".")){
-	        	splitSymbol = ".";
-	        }
-	        else if (textSpecs.contains("|")){
-	        	splitSymbol = "|";
-	        }
-	        for (final String filterString : textSpecs.split(Pattern.quote(splitSymbol))){
+	        for (final String filterString : textSpecs.split(",")){
 	        	split[count] = filterString;
 	        	count++;
 	        }
@@ -202,15 +195,13 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
 	        	String searchText = split[count].split(":")[1];
 	        	String option = "jcr:" + split[count].split(":")[0];
 	        	if (searchText != null && option != null){
-	        		if (splitSymbol=="|"){
+	        		if (searchText.charAt(0) == '.'){
+	        			searchText = searchText.substring(1, searchText.length());
+	        			cg.and(new FullTextConstraint(searchText, option));
+	        		}
+	        		else if (searchText.charAt(0) == '|'){
+	        			searchText = searchText.substring(1, searchText.length());
 	        			cg.or(new FullTextConstraint(searchText, option));
-	        		}
-	        		else if (splitSymbol=="."){
-	        			cg.and(new FullTextConstraint(searchText, option));
-	        		}
-	        		else{
-	        			cg.and(new FullTextConstraint(searchText, option));
-
 	        		}
 	        	    count++;
 	        	}
@@ -223,6 +214,15 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
         pathFilters.addConstraint(new PathConstraint("/content/usergenerated/asi/jcr/content/acme/en/projects",
             PathConstraintType.IsDescendantNode, Operator.Or));
         filter.and(pathFilters);
+        // Parse from request
+        if(request.getRequestParameter("path")!=null){
+	        RequestParameter pathSpec = request.getRequestParameter("path");
+	        String pathSpecString = pathSpec.getString();
+	        pathFilters.addConstraint(new PathConstraint(pathSpecString,
+	                PathConstraintType.IsDescendantNode, Operator.Or));
+        	
+     
+        }
 
         // Also sort.
         if(request.getRequestParameter("sort")!=null){
