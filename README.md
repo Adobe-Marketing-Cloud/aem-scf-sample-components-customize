@@ -47,3 +47,9 @@ http://localhost:4503/content/acme/en/projects.html?filter=title:OPERATION+SEARC
 
 without needing to include parameters for sort and path.  
 
+Custom search examples:
+
+http://localhost:4503/content/acme/en/projects.html?filter=title:.Project,description:.task&sort=title:asc
+
+http://localhost:4503/content/acme/en/projects.html?filter=title:.Project,description:.task&sort=title:desc&path=/content/usergenerated/asi/jcr/content/acme/en/projects
+
