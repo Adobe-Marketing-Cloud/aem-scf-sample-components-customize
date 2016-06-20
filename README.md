@@ -25,6 +25,9 @@ curl http://localhost:4503/content/usergenerated/asi/jcr/content/acme/en/project
 
 This sample is designed to work with whatever SRP is configured in the system. The above examples are using JSRP, but MSRP or ASRP would work identically.
 
+Custom search sample
+================
+
 Custom search can be done with 
 
 curl http://localhost:4503/content/acme/en/projects.html?filter=FILTER&sort=CATEGORY:ORDER 
