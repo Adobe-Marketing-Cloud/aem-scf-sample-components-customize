@@ -30,7 +30,7 @@ Custom search sample
 
 Custom search can be done with 
 
-curl http://localhost:4503/content/acme/en/projects.html?filter=FILTER&sort=CATEGORY:ORDER 
+curl http://localhost:4503/content/acme/en/projects.html?filter=FILTER&sort=CATEGORY:ORDER&path=PATH
 
 Valid filters are of the form:
 title:OPERATION+SEARCH STRING, description:OPERATION+SEARCH STRING
@@ -38,4 +38,12 @@ title:OPERATION+SEARCH STRING, description:OPERATION+SEARCH STRING
 OPERATION can be a "." to add the search string to the filer by an "and" operation or it can be "|" to add the search string to the filter by an "or" operation.
 
 For sorting, CATEGORY can be title or description.  Order can be "asc" to sort the results alphabetically in ascending order or "desc" to sort the results in descending order.  
+
+For path, PATH can be any valid path, for example, /content/usergenerated/asi/jcr/content/acme/en/projects.
+
+Any combination of filter parameters can used.  For instance, you can choose to only filter by project title if you would like with the filter 
+
+http://localhost:4503/content/acme/en/projects.html?filter=title:OPERATION+SEARCH-STRING
+
+without needing to include parameters for sort and path.  
 
