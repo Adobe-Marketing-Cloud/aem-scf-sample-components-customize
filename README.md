@@ -29,6 +29,7 @@ Custom search can be done with curl http://localhost:4503/content/acme/en/projec
 
 Valid filters are of the form:
 title:OPERATION+SEARCH STRING, description:OPERATION+SEARCH STRING
+
 OPERATION can be a "." to add the search string to the filer by a "and" operation or it can be "|" to add the search string to the filter by a "or" operation.
 
 For sorting, CATEGORY can be title or description.  Order can be "asc" to sort the results alphabetically in ascending order or "desc" to sort the results in descending order.  
