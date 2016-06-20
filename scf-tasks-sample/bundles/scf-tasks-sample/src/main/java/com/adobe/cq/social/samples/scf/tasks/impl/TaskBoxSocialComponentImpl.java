@@ -211,18 +211,18 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
 
         // Also restrict the paths we search under.
         final ConstraintGroup pathFilters = new ConstraintGroup(Operator.And);
-        pathFilters.addConstraint(new PathConstraint("/content/usergenerated/asi/jcr/content/acme/en/projects",
-            PathConstraintType.IsDescendantNode, Operator.Or));
-        filter.and(pathFilters);
+        String pathSpecString = "/content/usergenerated/asi/jcr/content/acme/en/projects";
         // Parse from request
         if(request.getRequestParameter("path")!=null){
 	        RequestParameter pathSpec = request.getRequestParameter("path");
-	        String pathSpecString = pathSpec.getString();
-	        pathFilters.addConstraint(new PathConstraint(pathSpecString,
-	                PathConstraintType.IsDescendantNode, Operator.Or));
+	        pathSpecString = pathSpec.getString();
+	       
         	
      
         }
+        pathFilters.addConstraint(new PathConstraint(pathSpecString,
+                PathConstraintType.IsDescendantNode, Operator.Or));
+        filter.and(pathFilters);
 
         // Also sort.
         if(request.getRequestParameter("sort")!=null){

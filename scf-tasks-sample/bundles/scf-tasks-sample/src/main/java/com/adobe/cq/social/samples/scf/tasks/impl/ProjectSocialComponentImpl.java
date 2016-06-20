@@ -37,6 +37,11 @@ public class ProjectSocialComponentImpl extends BaseSocialComponent implements P
     public String getDescription() {
         return props.get("jcr:description","");
     }
+    
+    @Override
+    public String getDate() {
+        return props.get("jcr:date","");
+    }
 
     @Override
     public User getOwner() {

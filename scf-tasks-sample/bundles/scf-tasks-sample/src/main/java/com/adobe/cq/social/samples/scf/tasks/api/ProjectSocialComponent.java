@@ -29,6 +29,11 @@ public interface ProjectSocialComponent extends SocialComponent {
      * @return the description of the project
      */
     String getDescription();
+    
+    /**
+     * @return the description of the project
+     */
+    String getDate();
 
     /**
      * @return the owner of the project as a {@link User}
