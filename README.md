@@ -42,11 +42,11 @@ PATH is a path where the social content will be searched.  For example,  /conten
 
 Any combination of parameters can be used, and within the parameters, additional constraints can be added by using logical operations.  "." signifies the "and" operation and "|" signifies the "or" operation. 
 
-Here is an example of using the logical operations on text filters
+Here are a couple of examples of using the logical operations on text filters
 
-http://localhost:4503/content/acme/en/projects.html?filter=title:MyProject|title:YourProject
+1) http://localhost:4503/content/acme/en/projects.html?filter=title:MyProject|title:YourProject
 
-http://localhost:4503/content/acme/en/projects.html?filter=title:MyProject.description:InProgress
+2) http://localhost:4503/content/acme/en/projects.html?filter=title:MyProject.description:InProgress
 
 In the first example, the search will find projects with the title "MyProject" or the title "YourProject".  In the second example, the search will find only projects with both the title "MyProject" and the description "InProgress".
 
