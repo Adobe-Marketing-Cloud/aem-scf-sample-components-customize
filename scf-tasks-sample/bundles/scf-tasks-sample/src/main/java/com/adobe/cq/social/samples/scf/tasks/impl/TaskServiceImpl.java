@@ -69,9 +69,8 @@ public class TaskServiceImpl implements TasksService {
         final String owner = userSession.getUserID();
         final String title = request.getParameter(PROJ_TITLE_PARAM);
         final String desc = request.getParameter(PROJ_DESC_PARAM);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         final String date = sdf.format(new Date());
-        
         return createProject(taskBox, owner, title, desc, date, request.getResourceResolver());
     }
 

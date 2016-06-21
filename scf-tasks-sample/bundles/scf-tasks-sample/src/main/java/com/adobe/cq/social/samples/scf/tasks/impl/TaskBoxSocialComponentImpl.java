@@ -9,10 +9,14 @@
  **************************************************************************/
 package com.adobe.cq.social.samples.scf.tasks.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import javax.jcr.RepositoryException;
@@ -177,56 +181,23 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
 
         final UgcFilter filter = new UgcFilter();
         
-        // Parse the search text from the parameter string
+        ConstraintGroup textConstraints = filterText(request);
         if (request.getRequestParameter("filter")!=null){
-	        String[] split = new String[10];
-	        RequestParameter textSpecParams = request.getRequestParameter("filter");
-	        String textSpecs = textSpecParams.getString();
-	        int count = 0;
-	        for (final String filterString : textSpecs.split(",")){
-	        	split[count] = filterString;
-	        	count++;
-	        }
-	  
-	        // Add the constraints to a ConstraintGroup
-	        ConstraintGroup cg = new ConstraintGroup();
-	        count = 0;
-	        while (split[count] != null) {
-	        	String searchText = split[count].split(":")[1];
-	        	String option = "jcr:" + split[count].split(":")[0];
-	        	if (searchText != null && option != null){
-	        		if (searchText.charAt(0) == '.'){
-	        			searchText = searchText.substring(1, searchText.length());
-	        			cg.and(new FullTextConstraint(searchText, option));
-	        		}
-	        		else if (searchText.charAt(0) == '|'){
-	        			searchText = searchText.substring(1, searchText.length());
-	        			cg.or(new FullTextConstraint(searchText, option));
-	        		}
-	        	    count++;
-	        	}
-	        }
-	        filter.and(cg);
+        	filter.and(textConstraints);
         }
-
-        // Also restrict the paths we search under.
-        final ConstraintGroup pathFilters = new ConstraintGroup(Operator.And);
-        String pathSpecString = "/content/usergenerated/asi/jcr/content/acme/en/projects";
-        // Parse from request
-        if(request.getRequestParameter("path")!=null){
-	        RequestParameter pathSpec = request.getRequestParameter("path");
-	        pathSpecString = pathSpec.getString();
-	       
-        	
-     
+        ConstraintGroup dateConstraints = filterDate(request);
+        if (request.getRequestParameter("date")!=null){
+        	filter.and(dateConstraints);
         }
-        pathFilters.addConstraint(new PathConstraint(pathSpecString,
-                PathConstraintType.IsDescendantNode, Operator.Or));
-        filter.and(pathFilters);
-
+        
+        ConstraintGroup pathConstraints = filterPath(request);
+        if (request.getRequestParameter("path")!=null){
+        	filter.and(pathConstraints);
+        }
+        
         // Also sort.
         if(request.getRequestParameter("sort")!=null){
-	        RequestParameter sortSpecParams = request.getRequestParameter("sort");
+        	RequestParameter sortSpecParams = request.getRequestParameter("sort");
         	String[] sortSpecs = new String[10];
         	String sortSpecText = sortSpecParams.getString();
         	int count = 0;
@@ -249,5 +220,135 @@ public class TaskBoxSocialComponentImpl extends BaseSocialComponent implements T
         }
         return filter;
     }
+    
+    
+    static Boolean[] getOperands(String searchString){
+    	String[] split = new String[10];
+        Boolean[] operands = new Boolean[10];
+        int count = 0;
+        for (final String str : searchString.split("\\.")){
+        	for (final String filterString : str.split("\\|")){
+        		operands[count] = false;
+        		if (filterString.equals(str)){
+        			operands[count] = true;
+        		}
+        		split[count] = filterString;
+        		count++;
+        	}
+        }
+        return operands;
+    }
+    
+    static String[] getFilterArgs(String searchString){
+    	String[] split = new String[10];
+        Boolean[] operands = new Boolean[10];
+        int count = 0;
+        for (final String str : searchString.split("\\.")){
+        	for (final String filterString : str.split("\\|")){
+        		operands[count] = false;
+        		if (filterString.equals(str)){
+        			operands[count] = true;
+        		}
+        		split[count] = filterString;
+        		count++;
+        	}
+        }
+    	return split;
+    }
+    
+     static ConstraintGroup filterText(SlingHttpServletRequest request){
+	    ConstraintGroup cg = new ConstraintGroup();
+    	if (request.getRequestParameter("filter")!=null){
+	        RequestParameter textSpecParams = request.getRequestParameter("filter");
+	        String textSpecs = textSpecParams.getString();
+	        Boolean[] operands = getOperands(textSpecs);
+	        String[] split = getFilterArgs(textSpecs);
+	  
+	        // Add the constraints to a ConstraintGroup
+	        int count = 0;
+	        while (split[count] != null) {
+	        	String searchText = split[count].split(":")[1];
+	        	String option = "jcr:" + split[count].split(":")[0];
+	        	if (searchText != null && option != null){
+	        		if (operands[count]){
+	        			cg.and(new FullTextConstraint(searchText, option));
+	        		}
+	        		else if (!operands[count]){
+	        			cg.or(new FullTextConstraint(searchText, option));
+	        		}
+	        	    count++;
+	        	}
+	        }
+        }
+    	 return cg;
+    }
+     
+     static ConstraintGroup filterDate(SlingHttpServletRequest request){
+	    ConstraintGroup cg = new ConstraintGroup();
+    	// Impose a date range restriction
+         if (request.getRequestParameter("date")!=null){
+         	RequestParameter dateSpec = request.getRequestParameter("date");
+ 	        String dateParamString = dateSpec.getString();
+ 	        Boolean[] operands = getOperands(dateParamString);
+ 	        String[] split = getFilterArgs(dateParamString);
+ 	  
+ 	        // Add the constraints to a ConstraintGroup
+ 	        int count = 0;
+ 	        while (split[count] != null) {
+ 	        	String startDate = split[count].split(",")[0];
+ 	        	String endDate = split[count].split(",")[1];
+ 	        	DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+ 	        	Date oldest = null;
+ 	        	try {
+ 	        		oldest = format.parse(startDate);
+ 				} catch (ParseException e) {
+ 					// TODO Auto-generated catch block
+ 					e.printStackTrace();
+ 				}
+ 	        	Date newest = null;
+ 				try {
+ 					newest = format.parse(endDate);
+ 				} catch (ParseException e) {
+ 					// TODO Auto-generated catch block
+ 					e.printStackTrace();
+ 				}
+ 	            if(operands[count]){
+ 	            	cg.and(new RangeConstraint<Date>("jcr:date", oldest, newest));
+ 	            }
+ 	            else{
+ 	            	cg.and(new RangeConstraint<Date>("jcr:date", oldest, newest));
+ 	            }
+ 	            count++;
+ 	        }
+         } 
+         return cg;
+     }
+     
+    static ConstraintGroup filterPath(SlingHttpServletRequest request){
+    	final ConstraintGroup cg = new ConstraintGroup(Operator.And);
+        String pathSpecString = "/content/usergenerated/asi/jcr/content/acme/en/projects";
+        // Parse from request
+        if(request.getRequestParameter("path")!=null){
+	        RequestParameter pathSpec = request.getRequestParameter("path");
+	        pathSpecString = pathSpec.getString();
+	        String[] split = getFilterArgs(pathSpecString);
+	        Boolean[] operands = getOperands(pathSpecString);
+	        int count = 0;
+	        while(split[count]!=null){
+	        	if(operands[count]){
+	        		cg.addConstraint(new PathConstraint(split[count],
+	                        PathConstraintType.IsDescendantNode, Operator.And));
+	        	}
+	        	else{
+	        		cg.addConstraint(new PathConstraint(split[count],
+	                        PathConstraintType.IsDescendantNode, Operator.Or));
+	        	}
+	        	count++;
+	        }
+        }
+        
+       return cg;
+    	
+    }
+    }
 
-}
