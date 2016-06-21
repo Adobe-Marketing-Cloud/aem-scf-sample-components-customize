@@ -28,7 +28,7 @@ This sample is designed to work with whatever SRP is configured in the system. T
 Custom search sample
 ================
 
-Custom search can be done with 
+Custom search can accomplished with requests of the form 
 
 curl http://localhost:4503/content/acme/en/projects.html?filter=CATEGORY:STRING&date=START, END&sort=CATEGORY:ORDER&path=PATH
 
