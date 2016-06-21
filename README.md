@@ -30,26 +30,25 @@ Custom search sample
 
 Custom search can be done with 
 
-curl http://localhost:4503/content/acme/en/projects.html?filter=FILTER&sort=CATEGORY:ORDER&path=PATH
+curl http://localhost:4503/content/acme/en/projects.html?filter=CATEGORY:STRING&date=START, END&sort=CATEGORY:ORDER&path=PATH
 
-Valid filters are of the form:
-title:OPERATION+SEARCH STRING, description:OPERATION+SEARCH STRING
+CATEGORY is any indexable property of the social component.  In this case, "title" and "description".
 
-OPERATION can be a "." to add the search string to the filer by an "and" operation or it can be "|" to add the search string to the filter by an "or" operation.
+STRING is any string.
 
-For sorting, CATEGORY can be title or description.  Order can be "asc" to sort the results alphabetically in ascending order or "desc" to sort the results in descending order.  
+START/END is a date in yyyy-mm-dd format.
 
-For path, PATH can be any valid path, for example, /content/usergenerated/asi/jcr/content/acme/en/projects.
+PATH is a path where the social content will be searched.  For example,  /content/usergenerated/asi/jcr/content/acme/en/projects.
 
-Any combination of filter parameters can used.  For instance, you can choose to only filter by project title if you would like with the filter 
+Any combination of parameters can be used, and within the parameters, additional constraints can be added by using logical operations.  "." signifies the "and" operation and "|" signifies the "or" operation. 
 
-http://localhost:4503/content/acme/en/projects.html?filter=title:OPERATION+SEARCH-STRING
+Here is an example of using the logical operations on text filters
 
-without needing to include parameters for sort and path.  
+http://localhost:4503/content/acme/en/projects.html?filter=title:MyProject|title:YourProject
 
-Custom search examples:
+http://localhost:4503/content/acme/en/projects.html?filter=title:MyProject.description:InProgress
 
-http://localhost:4503/content/acme/en/projects.html?filter=title:.Project,description:.task&sort=title:asc
+In the first example, the search will find projects with the title "MyProject" or the title "YourProject".  In the second example, the search will find only projects with both the title "MyProject" and the description "InProgress".
 
-http://localhost:4503/content/acme/en/projects.html?filter=title:.Project,description:.task&sort=title:desc&path=/content/usergenerated/asi/jcr/content/acme/en/projects
+These logical operations can similarly be done with the other parameters "date" and "path".
 
