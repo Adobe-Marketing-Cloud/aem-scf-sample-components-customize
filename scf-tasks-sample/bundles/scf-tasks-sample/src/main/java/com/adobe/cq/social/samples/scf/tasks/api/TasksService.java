@@ -40,7 +40,7 @@ public interface TasksService {
      * @param resolver the resolver to use when creating the project
      * @return the newly created project resource
      */
-    Resource createProject(final Resource taskBox, final String owner, final String title, final String desc,
+    Resource createProject(final Resource taskBox, final String owner, final String title, final String desc, String date,
         final ResourceResolver resolver) throws OperationException;
     
     /**

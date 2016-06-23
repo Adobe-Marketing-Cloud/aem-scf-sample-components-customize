@@ -9,7 +9,9 @@
  **************************************************************************/
 package com.adobe.cq.social.samples.scf.tasks.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,11 +69,13 @@ public class TaskServiceImpl implements TasksService {
         final String owner = userSession.getUserID();
         final String title = request.getParameter(PROJ_TITLE_PARAM);
         final String desc = request.getParameter(PROJ_DESC_PARAM);
-        return createProject(taskBox, owner, title, desc, request.getResourceResolver());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        final String date = sdf.format(new Date());
+        return createProject(taskBox, owner, title, desc, date, request.getResourceResolver());
     }
 
     @Override
-    public Resource createProject(Resource taskBox, String owner, String title, String desc, ResourceResolver resolver)
+    public Resource createProject(Resource taskBox, String owner, String title, String desc, String date, ResourceResolver resolver)
         throws OperationException {
         // perform basic validation and thrown an OperationException if request is invalid. Use response code of 400
         // to indicate "bad request"
@@ -80,6 +84,9 @@ public class TaskServiceImpl implements TasksService {
         }
         if (StringUtils.isEmpty(title)) {
             throw new OperationException("Title must be present", 400);
+        }
+        if (StringUtils.isEmpty(date)) {
+            throw new OperationException("Date must be present", 400);
         }
         if (!taskBox.isResourceType(TaskBoxSocialComponent.RESOURCE_TYPE)) {
             throw new OperationException("Projects can only be created under a taskbox", 400);
@@ -94,15 +101,17 @@ public class TaskServiceImpl implements TasksService {
             if (!socialUtils.mayPost(resolver, taskBox)) {
                 throw new OperationException("Projects can not be created", 400);
             }
+          
 
             Map<String, Object> props = new HashMap<String, Object>(5);
             props.put("jcr:title", title);
             props.put("jcr:description", desc);
+            props.put("jcr:date", date);
             props.put(CollabUser.PROP_NAME, owner);
             props.put(SocialUtils.PN_PARENTID, taskBox.getPath());
             props.put("sling:resourceType", ProjectSocialComponent.PROJECT_RESOURCE_TYPE);
             props.put("jcr:primaryType", "nt:unstructured");
-
+            props.put("wyatt_extension", "boo");
             // use the Resource API to create resource to make this data store agnostic
             final Resource newProject =
                 srp.create(resolver, socialUtils.resourceToUGCStoragePath(taskBox) + "/"
